@@ -477,13 +477,6 @@ header.scrolled {
     color: white;
 }
 
-.social-icon.twitter svg {
-    width: 18px;
-    height: 18px;
-    display: block;
-    color: inherit;
-}
-
 /* Enhanced Home Image */
 .home-image {
     position: relative;
