@@ -1,7 +1,3 @@
 INI ADALAH PORTOFOLIO SAYA. 
 
 JIKA ANDA INGIN LIHAT, SILAHKAN.
-
-#figma link
-
-https://www.figma.com/files/team/1572489690887302032/drafts?fuid=1572489688500314119
