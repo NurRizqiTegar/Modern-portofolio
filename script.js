@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const hireBtns = document.querySelectorAll('.hire-btn');
     const aboutBtn = document.querySelector('.about-btn');
     const socialIcons = document.querySelectorAll('.social-icon');
+    const downloadCvButtons = document.querySelectorAll('.download-cv-btn');
 
     // Professions for typewriter effect
     const professions = [
@@ -53,6 +54,51 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         setTimeout(typeWriter, typingSpeed);
+    }
+
+    // Download CV Function
+    function downloadCV() {
+        const cvUrl = 'files/Nur rizqi tegar CV.pdf';
+        const fileName = 'Nur_Rizqi_Tegar_Wibawa_CV.pdf';
+        
+        // Show loading state
+        downloadCvButtons.forEach(btn => {
+            btn.classList.add('downloading');
+            btn.disabled = true;
+        });
+        
+        // Create download link
+        const link = document.createElement('a');
+        link.href = cvUrl;
+        link.download = fileName;
+        
+        // Append to body, click, and remove
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Remove loading state after a delay
+        setTimeout(() => {
+            downloadCvButtons.forEach(btn => {
+                btn.classList.remove('downloading');
+                btn.disabled = false;
+            });
+            showNotification('CV downloaded successfully! 📄', 'success');
+        }, 1000);
+    }
+
+    // Scroll to Contact Function
+    function scrollToContact() {
+        const contactSection = document.querySelector('#contact');
+        if (contactSection) {
+            const headerHeight = header?.offsetHeight || 80;
+            const offsetTop = contactSection.offsetTop - headerHeight;
+            
+            window.scrollTo({
+                top: offsetTop,
+                behavior: 'smooth'
+            });
+        }
     }
 
     // Mobile Menu Toggle
@@ -207,17 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Add button-specific actions here
         if (button.classList.contains('cta-btn') || button.textContent.includes('Hire')) {
-            // Scroll to contact section or show contact modal
-            const contactSection = document.querySelector('#contact');
-            if (contactSection) {
-                contactSection.scrollIntoView({ behavior: 'smooth' });
-            } else {
-                // Fallback: show alert or modal
-                showNotification('Contact section coming soon!', 'info');
-            }
-        } else if (button.textContent.includes('Download CV')) {
-            // Handle CV download
-            showNotification('CV download will be available soon!', 'info');
+            scrollToContact();
         }
     }
 
@@ -226,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
         notification.innerHTML = `
-            <i class="fas fa-${type === 'info' ? 'info-circle' : 'check-circle'}"></i>
+            <i class="fas fa-${type === 'info' ? 'info-circle' : type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
             <span>${message}</span>
         `;
         
@@ -235,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function() {
             position: 'fixed',
             top: '20px',
             right: '20px',
-            background: type === 'info' ? 'var(--accent-primary)' : '#10b981',
+            background: type === 'info' ? 'var(--accent-primary)' : type === 'success' ? '#10b981' : '#ef4444',
             color: 'white',
             padding: '1rem 1.5rem',
             borderRadius: '12px',
@@ -352,6 +388,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Download CV buttons
+    downloadCvButtons.forEach(btn => {
+        btn.addEventListener('click', downloadCV);
+    });
+
     // Social icons hover effects
     socialIcons.forEach(icon => {
         icon.addEventListener('mouseenter', function() {
@@ -465,6 +506,29 @@ document.addEventListener('DOMContentLoaded', function() {
             to { opacity: 1; }
         }
         
+        /* Download button loading state */
+        .downloading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        
+        .downloading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         /* Focus styles for accessibility */
         .nav-link:focus-visible,
         .social-icon:focus-visible,
@@ -522,13 +586,3 @@ window.addEventListener('error', (event) => {
 window.addEventListener('unhandledrejection', (event) => {
     console.error('Unhandled Promise Rejection:', event.reason);
 });
-
-// Service Worker Registration (optional)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        // Uncomment if you have a service worker
-        // navigator.serviceWorker.register('/sw.js')
-        //     .then(registration => console.log('SW registered'))
-        //     .catch(error => console.log('SW registration failed'));
-    });
-}
